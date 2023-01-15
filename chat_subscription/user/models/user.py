@@ -39,14 +39,17 @@ class UserManager(BaseUserManager):
 
 
 class User(BaseUserModel):
-    USERNAME_FIELD = EMAIL_FIELD = "email"
+    USERNAME_FIELD = "username"
+    EMAIL_FIELD = "email"
 
     objects = UserManager()
 
+    username = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
+    date_joined = models.DateTimeField(auto_now_add=True)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

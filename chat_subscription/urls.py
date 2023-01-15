@@ -15,7 +15,37 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from strawberry.django.views import GraphQLView
+from strawberry.http import GraphQLHTTPResponse
+from strawberry.types import ExecutionResult
+
+from graphql.error.graphql_error import format_error as format_graphql_error
+from django.http import HttpRequest, HttpResponse
+from strawberry.django.context import StrawberryDjangoContext
+from typing import Any
+from .schema import schema
+
+
+class CustomGraphQLView(GraphQLView):
+    def get_context(self, request: HttpRequest, response: HttpResponse) -> Any:
+        return StrawberryDjangoContext(request=request, response=response)
+
+    def process_result(self, request: HttpRequest, result: ExecutionResult) -> GraphQLHTTPResponse:
+        data: GraphQLHTTPResponse = {"data": result.data}
+
+        if result.errors:
+            data["errors"] = [format_graphql_error(err) for err in result.errors]
+
+        return data
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "graphql/",
+        CustomGraphQLView.as_view(
+            graphiql=True,
+            schema=schema,
+        ),
+    ),
 ]
