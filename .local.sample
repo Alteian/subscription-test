@@ -1,0 +1,3 @@
+DJANGO_SETTINGS_MODULE=chat_subscription.settings.local
+SECRET_KEY=django-insecure-d#$=)mg)i-pu(cbrq5goe+v-*an4d&!e&-v*v(!wd_x%xo6q#q
+DEBUG=True
