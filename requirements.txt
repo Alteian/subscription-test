@@ -1,5 +1,6 @@
 asgiref==3.6.0
 Django==4.1.5
+django-extensions==3.2.1
 graphql-core==3.2.3
 psycopg2==2.9.5
 python-dateutil==2.8.2
