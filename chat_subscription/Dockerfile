@@ -10,4 +10,5 @@ RUN python3 -m pip install -r requirements.txt
 
 COPY ./ /code/
 
+EXPOSE 8000
 WORKDIR /code
