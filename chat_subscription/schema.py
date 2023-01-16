@@ -5,13 +5,18 @@ from strawberry.extensions import QueryDepthLimiter
 from strawberry_django_plus.directives import SchemaDirectiveExtension
 from strawberry_django_plus.optimizer import DjangoOptimizerExtension
 
-# import chat_subscription.chat.graphql.schema
-# import chat_subscription.user.graphql.schema
-from chat_subscription.user.graphql.schema import Query, Mutation
+import chat_subscription.chat.graphql.schema
+import chat_subscription.user.graphql.schema
 
-
-# Mutation = merge_types()
-# Query = merge_types()
+Mutation = merge_types(
+    name="Mutation",
+    types=(
+        chat_subscription.chat.graphql.schema.ChatMutation,
+        chat_subscription.user.graphql.schema.UserMutation,
+    ),
+)
+Query = chat_subscription.user.graphql.schema.UserQuery
+Subscription = chat_subscription.chat.graphql.schema.ChatSubscription
 # @strawberry.type
 # class Query:
 #    @strawberry.field(description="A simple ping to test the server.")
@@ -22,11 +27,12 @@ from chat_subscription.user.graphql.schema import Query, Mutation
 schema = Schema(
     query=Query,
     mutation=Mutation,
+    subscription=Subscription,
     config=StrawberryConfig(
         auto_camel_case=True,
     ),
     extensions=[
-        QueryDepthLimiter(max_depth=10),  # TODO: find optimal amount.
+        QueryDepthLimiter(max_depth=10),
         SchemaDirectiveExtension,
         DjangoOptimizerExtension,
     ],
