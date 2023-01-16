@@ -5,5 +5,5 @@ from .types import CustomUserType  # noqa
 
 
 @strawberry.type
-class Query(UserQueries):
+class UserQuery(UserQueries):
     ...

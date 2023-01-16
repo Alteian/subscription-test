@@ -1,2 +1,2 @@
-from .queries import Query  # noqa
-from .mutations import Mutation  # noqa
+from .queries import UserQuery  # noqa
+from .mutations import UserMutation  # noqa

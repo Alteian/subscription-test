@@ -46,6 +46,8 @@ urlpatterns = [
         CustomGraphQLView.as_view(
             graphiql=True,
             schema=schema,
+            subscriptions_enabled=True,
+            json_encoder=CustomGraphQLView.json_encoder,  # TODO(Verify):Probably not necessary
         ),
     ),
 ]

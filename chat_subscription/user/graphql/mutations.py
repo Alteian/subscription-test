@@ -4,7 +4,7 @@ from gqlauth.user import relay as mutations
 
 
 @strawberry.type
-class Mutation:
+class UserMutation:
 
     # include what-ever mutations you want.
     verify_token = mutations.VerifyToken.field
