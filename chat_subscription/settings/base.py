@@ -88,6 +88,7 @@ ASGI_APPLICATION = "chat_subscription.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "EXPIRE": 60 # * 60 * 24 * 7 ,
     },
 }
 # Database

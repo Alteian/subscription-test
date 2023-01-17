@@ -12,23 +12,38 @@ django_asgi_app = get_asgi_application()
 
 
 from .schema import schema  # noqa
+class DebuggableGraphQLWSConsumer(GraphQLWSConsumer):
+    async def get_context(self, *args, **kwargs) -> object:
+        context = await super().get_context(*args, **kwargs)
+        #context = await self._handler.get_context(*args, **kwargs)
+        context.tasks = self._handler.tasks
+        
+        return context
+
+
+class DebuggableGraphQLHTTPConsumer(GraphQLHTTPConsumer):
+    async def get_context(self, *args, **kwargs) -> object:
+        context = await super().get_context(*args, **kwargs)
+        context.user = "test"
+        return context
+
 
 websocket_urlpatterns = [
-    re_path(r"graphql", GraphQLWSConsumer.as_asgi(schema=schema)),
+    re_path("^ws/graphql/", DebuggableGraphQLWSConsumer.as_asgi(schema=schema)),
 ]
 
-gql_http_consumer = AuthMiddlewareStack(GraphQLHTTPConsumer.as_asgi(schema=schema))
-gql_ws_consumer = GraphQLWSConsumer.as_asgi(schema=schema)
+gql_http_consumer = AuthMiddlewareStack(DebuggableGraphQLHTTPConsumer.as_asgi(schema=schema))
+gql_ws_consumer = DebuggableGraphQLWSConsumer.as_asgi(schema=schema)
 
 application = ProtocolTypeRouter(
     {
         "http": URLRouter(
             [
-                re_path("^graphql/", gql_http_consumer),
+                re_path("^ws/graphql/", gql_http_consumer),
                 re_path("^", django_asgi_app),
             ]
         ),
-        "websocket": AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
+        "websocket": URLRouter(websocket_urlpatterns),
     }
 )
 """
